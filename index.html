@@ -734,18 +734,29 @@
           <h2>Interested in working together?</h2>
           <p>Open to opportunities connected to mechanical engineering, web design, technical projects, student-focused tools, and digital product work.</p>
           <div class="cta-row">
-            <a class="btn btn-mint" href="mailto:medalimariam@gmail.com">Email me</a>
+            <a
+              class="btn btn-mint"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=medalimariam@gmail.com&su=Portfolio%20contact"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-contact-action="email"
+            >Email me</a>
             <a class="btn btn-outline-light" href="assets/Lebenslauf_Mohamed_Ali_Mariam.pdf" target="_blank" rel="noopener noreferrer">View CV</a>
-            <a class="btn btn-outline-light" href="tel:+4917684501044">Call me</a>
+            <a
+              class="btn btn-outline-light"
+              href="tel:+4917684501044"
+              aria-label="Call Mohamed Ali Mariam at +49 176 84501044"
+              data-contact-action="call"
+            >Call me</a>
           </div>
           <div class="contact-meta">
             <div>
               <div class="k">Email</div>
-              <a class="v" href="mailto:medalimariam@gmail.com">medalimariam@gmail.com</a>
+              <a class="v" href="mailto:medalimariam@gmail.com" data-contact-action="mailto">medalimariam@gmail.com</a>
             </div>
             <div>
               <div class="k">Phone</div>
-              <a class="v" href="tel:+4917684501044">+49 176 84501044</a>
+              <a class="v" href="tel:+4917684501044" aria-label="Call Mohamed Ali Mariam at +49 176 84501044" data-contact-action="call">+49 176 84501044</a>
             </div>
             <div>
               <div class="k">Location</div>
@@ -782,6 +793,26 @@
         });
       }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
       els.forEach(function (el) { io.observe(el); });
+    })();
+
+    // Explicit contact actions so email/call buttons behave consistently.
+    (function () {
+      var emailUrl = 'https://mail.google.com/mail/?view=cm&fs=1&to=medalimariam@gmail.com&su=Portfolio%20contact';
+      var phoneUrl = 'tel:+4917684501044';
+
+      document.querySelectorAll('[data-contact-action="email"]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          window.open(emailUrl, '_blank', 'noopener,noreferrer');
+        });
+      });
+
+      document.querySelectorAll('[data-contact-action="call"]').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+          event.preventDefault();
+          window.location.href = phoneUrl;
+        });
+      });
     })();
   </script>
 </body>
