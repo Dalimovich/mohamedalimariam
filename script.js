@@ -114,6 +114,69 @@
   setLanguage(document.documentElement.lang === 'de' ? 'de' : 'en');
 })();
 
+// Smooth mouse-follow trail for fine pointers only.
+(function () {
+  if (!window.matchMedia('(pointer: fine)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var dots = [];
+  var dotCount = 1;
+  var mouse = { x: -40, y: -40 };
+  for (var i = 0; i < dotCount; i++) {
+    var dot = document.createElement('span');
+    dot.className = 'mouse-follower';
+    dot.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(dot);
+    dots.push({ el: dot, x: mouse.x, y: mouse.y });
+  }
+
+  document.addEventListener('mousemove', function (event) {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+    dots.forEach(function (dot) { dot.el.classList.add('is-visible'); });
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', function () {
+    dots.forEach(function (dot) { dot.el.classList.remove('is-visible'); });
+  });
+
+  function animateFollower() {
+    var targetX = mouse.x;
+    var targetY = mouse.y;
+    dots.forEach(function (dot, index) {
+      var easing = Math.max(.18, .36 - index * .018);
+      dot.x += (targetX - dot.x) * easing;
+      dot.y += (targetY - dot.y) * easing;
+      dot.el.style.left = dot.x + 'px';
+      dot.el.style.top = dot.y + 'px';
+      targetX = dot.x;
+      targetY = dot.y;
+    });
+    requestAnimationFrame(animateFollower);
+  }
+  requestAnimationFrame(animateFollower);
+})();
+
+// Accessible back-to-top control shared by both language versions.
+(function () {
+  var german = document.documentElement.lang === 'de';
+  var button = document.createElement('button');
+  button.className = 'back-to-top';
+  button.type = 'button';
+  button.setAttribute('aria-label', german ? 'Zurück nach oben' : 'Back to top');
+  button.title = german ? 'Zurück nach oben' : 'Back to top';
+  button.innerHTML = '<span aria-hidden="true">↑</span>';
+  document.body.appendChild(button);
+
+  function updateButton() {
+    button.classList.toggle('is-visible', window.scrollY > 500);
+  }
+  window.addEventListener('scroll', updateButton, { passive: true });
+  button.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  });
+  updateButton();
+})();
+
 // Subtle reveal-on-scroll (premium, lightweight).
 (function () {
   var els = document.querySelectorAll('.reveal');
